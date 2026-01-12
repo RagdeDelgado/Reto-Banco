@@ -6,15 +6,16 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 import com.banco.api.entity.ClientsEntity;
-import com.banco.api.service.ClienteService;
+import com.banco.api.service.ClientsService;
 
 @Path("/clientes")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ClienteController {
+
+public class ClientsController {
 	
 	@Inject
-    private ClienteService service;
+    private ClientsService service;
 
     @GET
     public List<ClientsEntity> getAll() {
