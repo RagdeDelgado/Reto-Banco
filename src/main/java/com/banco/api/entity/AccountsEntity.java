@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "accounts")
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class AccountsEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +40,11 @@ public class AccountsEntity {
     private EstadoCuenta estado = EstadoCuenta.ACTIVO;
 
     @Column(updatable = false)
-    private LocalDateTime fechaCreacion;
+    private Date fechaCreacion;
 
     @PrePersist
     protected void onCreate() {
-        fechaCreacion = LocalDateTime.now();
+        fechaCreacion = new Date();
     }
 
     public enum TipoCuenta {

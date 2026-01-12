@@ -3,6 +3,8 @@ package com.banco.api.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.banco.api.entity.ClientsEntity;
@@ -11,7 +13,6 @@ import com.banco.api.service.ClientsService;
 @Path("/clientes")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-
 public class ClientsController {
 	
 	@Inject
@@ -20,6 +21,8 @@ public class ClientsController {
     @GET
     public List<ClientsEntity> getAll() {
         return service.findAll();
+//        System.out.println("Prueba");
+//        return new ArrayList<ClientsEntity>();
     }
 
     @POST

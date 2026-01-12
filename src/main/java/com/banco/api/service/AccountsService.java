@@ -7,42 +7,37 @@ import com.banco.api.entity.ClientsEntity;
 import com.banco.api.util.Log;
 
 import lombok.extern.slf4j.Slf4j;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
 
 //@Slf4j
+@Stateless
 public class AccountsService {
 	
-	private EntityManagerFactory emf;
-
-    public AccountsService() {
-        emf = Persistence.createEntityManagerFactory("banco_pu");        
-        Log.info(LoadFilesService.class,"CuentaService initialized");
-    }
+	@PersistenceContext(unitName = "BancoPU")
+	private EntityManager em;
 
     public AccountsEntity crearCuenta(AccountsEntity cuenta) {
-        EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
+//            em.getTransaction().begin();
             em.persist(cuenta);
-            em.getTransaction().commit();            
+//            em.getTransaction().commit();            
             Log.info(LoadFilesService.class,"Cuenta creada: {}", cuenta.getNumeroCuenta());
             return cuenta;
         } catch (Exception e) {
             em.getTransaction().rollback();            
             Log.info(LoadFilesService.class,"Error creando cuenta", e);
             throw e;
-        } finally {
-            em.close();
         }
     }
 
     public boolean existeNumeroCuenta(String numero) {
-        EntityManager em = emf.createEntityManager();
         try {
             return em.createQuery(
-                    "SELECT COUNT(c) FROM Cuenta c WHERE c.numeroCuenta = :numero", Long.class)
+                    "SELECT COUNT(c) FROM AccountsEntity c WHERE c.numeroCuenta = :numero", Long.class)
                 .setParameter("numero", numero)
                 .getSingleResult() > 0;
         } finally {
@@ -51,45 +46,41 @@ public class AccountsService {
     }
 
     public String generarNumeroCuenta() {
-        EntityManager em = emf.createEntityManager();
         try {
             Long maxId = em.createQuery(
-                    "SELECT COALESCE(MAX(c.idCuenta), 0) FROM Cuenta c", Long.class)
+                    "SELECT COALESCE(MAX(c.idCuenta), 0) FROM AccountsEntity c", Long.class)
                 .getSingleResult();
             String numeroCuenta = "ACC-" + String.format("%010d", maxId + 1);            
             Log.info(LoadFilesService.class,"Número de cuenta generado: {}", numeroCuenta);
             
             return numeroCuenta;
-        } finally {
-            em.close();
-        }
+        } catch (Exception e) {
+			System.out.println(e.getMessage());
+			return "";
+		}
     }
 	
     
-    public AccountsEntity create(AccountsEntity cuenta) {
-    	EntityManager em = emf.createEntityManager();    
+    public AccountsEntity create(AccountsEntity cuenta) {   
         em.persist(cuenta);
         return cuenta;
     }
     
-    public AccountsEntity find(Long id) {
-    	EntityManager em = emf.createEntityManager();    
+    public AccountsEntity find(Long id) {  
         return em.find(AccountsEntity.class, id);
     }
    
     public List<AccountsEntity> findAll() {
-    	EntityManager em = emf.createEntityManager();
-        return em.createQuery("SELECT c FROM Cuenta c", AccountsEntity.class).getResultList();
+        return em.createQuery("SELECT c FROM AccountsEntity c", AccountsEntity.class).getResultList();
     }
     
 
     public AccountsEntity update(AccountsEntity cuenta) {
-    	EntityManager em = emf.createEntityManager();
         return em.merge(cuenta);
     }
 
-    public void delete(Long id) {    	
-    	EntityManager em = emf.createEntityManager();AccountsEntity c = em.find(AccountsEntity.class, id);
+    public void delete(Long id) {
+    	AccountsEntity c = em.find(AccountsEntity.class, id);
         if (c != null) {
             em.remove(c);
         }

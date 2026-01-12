@@ -1,6 +1,7 @@
 package com.banco.api.entity;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import com.banco.api.enums.EstadoCliente;
 import com.banco.api.enums.TipoIdentificacion;
@@ -47,10 +48,10 @@ public class ClientsEntity {
 	private String segundoApellido;
 
 	@Column(nullable = false)
-	private LocalDate fechaNacimiento;
+	private Date fechaNacimiento;
 
 	@Column(nullable = false)
-	private LocalDate fechaIngreso;
+	private Date fechaIngreso;
 
 	@Column(unique = true, nullable = false)
 	private String correo;
@@ -58,6 +59,7 @@ public class ClientsEntity {
 	@Column(nullable = false)
 	private String celular;
 
+	@Column
 	@Enumerated(EnumType.STRING)
 	private EstadoCliente estado;
 

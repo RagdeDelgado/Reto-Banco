@@ -1,10 +1,12 @@
 package com.banco.api.service;
 
 import lombok.extern.slf4j.Slf4j;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
@@ -12,30 +14,25 @@ import com.banco.api.entity.ClientsEntity;
 
 //@Slf4j
 
+@Stateless
 public class ClientsService {
 	
-	private EntityManagerFactory emf;
-
-    public ClientsService() {
-        emf = Persistence.createEntityManagerFactory("banco_pu");
-        //log.info("ClienteService initialized");
-    }
+	
+	@PersistenceContext(unitName = "BancoPU")
+	private EntityManager em;
 
     public ClientsEntity crearCliente(ClientsEntity cliente) {
-        EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
+//            em.getTransaction().begin();
             em.persist(cliente);
-            em.getTransaction().commit();
+//            em.getTransaction().commit();
             //log.info("Cliente creado: {}", cliente.getCodigoCliente());
             return cliente;
         } catch (Exception e) {
             em.getTransaction().rollback();
             //log.error("Error creando cliente", e);
             throw e;
-        } finally {
-            em.close();
-        }
+        } 
     }
 
 //    public ClientsEntity obtenerClientePorIdentificacion(String tipoId, String numeroId) {
@@ -55,57 +52,71 @@ public class ClientsService {
 //    }
 
     public boolean existeCorreo(String correo) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery(
-                    "SELECT COUNT(c) FROM Cliente c WHERE c.correo = :correo", Long.class)
+//        try {
+        	
+        	Long count = em.createQuery(
+                    "SELECT COUNT(c) FROM ClientsEntity c WHERE c.correo = :correo",
+                    Long.class)
                 .setParameter("correo", correo)
-                .getSingleResult() > 0;
-        } finally {
-            em.close();
-        }
+                .getSingleResult();
+
+            return count  > 0 ? true : false ;
+        	
+        	
+//            return this.em.createQuery(
+//                    "SELECT COUNT(c) FROM ClientsEntity c WHERE c.correo = :correo", Long.class)
+//                .setParameter("correo", correo)
+//                .getSingleResult() > 0;
+//        } finally {
+//            em.close();
+//        }
     }
 
-    public boolean existeNumerIdentificacion(String numero) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery(
-                    "SELECT COUNT(c) FROM Cliente c WHERE c.numeroIdentificacion = :numero", 
-                    Long.class)
-                .setParameter("numero", numero)
-                .getSingleResult() > 0;
-        } finally {
-            em.close();
-        }
-    }
+//    public boolean existeNumerIdentificacion(String numero) {
+//        try {
+//            return this.em.createQuery(
+//                    "SELECT COUNT(c) FROM ClientsEntity c WHERE c.numeroIdentificacion = :numero", 
+//                    Long.class)
+//                .setParameter("numero", numero)
+//                .getSingleResult() > 0;
+//        } finally {
+//            em.close();
+//        }
+//    }
     
+    public boolean existeNumeroIdentificacion(String numero) {
+
+        Long count = em.createQuery(
+                "SELECT COUNT(c) FROM ClientsEntity c WHERE c.numeroIdentificacion = :numero",
+                Long.class)
+            .setParameter("numero", numero)
+            .getSingleResult();
+
+        return count != null && count > 0;
+    }
     
     
     
     public ClientsEntity create(ClientsEntity cliente) {
-    	EntityManager em = emf.createEntityManager();    
-        em.persist(cliente);
+    	this.em.persist(cliente);
         return cliente;
     }
 
     public ClientsEntity find(Long id) {
-    	EntityManager em = emf.createEntityManager();    
-        return em.find(ClientsEntity.class, id);
+    	return this.em.find(ClientsEntity.class, id);
     }
    
     public List<ClientsEntity> findAll() {
-    	EntityManager em = emf.createEntityManager();
-        return em.createQuery("SELECT c FROM Cliente c", ClientsEntity.class).getResultList();
+        return this.em.createQuery("SELECT c FROM ClientsEntity c ", ClientsEntity.class).getResultList();
     }
     
 
     public ClientsEntity update(ClientsEntity cliente) {
-    	EntityManager em = emf.createEntityManager();
-        return em.merge(cliente);
+    	return this.em.merge(cliente);
     }
 
     public void delete(Long id) {    	
-    	EntityManager em = emf.createEntityManager();ClientsEntity c = em.find(ClientsEntity.class, id);
+    	ClientsEntity c = this.em.find(ClientsEntity.class, id);
         if (c != null) {
             em.remove(c);
         }

@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import com.banco.api.util.Log;
 
+import jakarta.ejb.Stateless;
+
 //@Slf4j
 
+//@Stateless
 public class DatabookService {
 	private static final Map<String, DatabookDTO> databookData = new HashMap<>();
 
