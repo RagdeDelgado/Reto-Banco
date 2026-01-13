@@ -1,19 +1,13 @@
 package com.banco.api.service;
 
 import java.util.List;
-
 import com.banco.api.entity.AccountsEntity;
-import com.banco.api.entity.ClientsEntity;
 import com.banco.api.util.Log;
-
-import lombok.extern.slf4j.Slf4j;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceContext;
 
-//@Slf4j
+//
 @Stateless
 public class AccountsService {
 	
@@ -22,9 +16,7 @@ public class AccountsService {
 
     public AccountsEntity crearCuenta(AccountsEntity cuenta) {
         try {
-//            em.getTransaction().begin();
-            em.persist(cuenta);
-//            em.getTransaction().commit();            
+            em.persist(cuenta);            
             Log.info(LoadFilesService.class,"Cuenta creada: {}", cuenta.getNumeroCuenta());
             return cuenta;
         } catch (Exception e) {

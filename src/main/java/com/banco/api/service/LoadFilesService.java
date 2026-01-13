@@ -1,43 +1,24 @@
 package com.banco.api.service;
 
-import com.banco.api.dto.ClientsDTO;
 import com.banco.api.dto.LoadResultsDTO;
 import com.banco.api.dto.DatabookDTO;
 import com.banco.api.entity.ClientsEntity;
 import com.banco.api.enums.EstadoCliente;
 import com.banco.api.enums.TipoIdentificacion;
 import com.banco.api.entity.AccountsEntity;
-
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-
 import java.io.InputStream;
-
-//import lombok.extern.slf4j.Slf4j;
-
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-
 import com.banco.api.util.Log;
-
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.ws.rs.core.Response;
-
-//@Slf4j
 
 @Stateless
 public class LoadFilesService {
@@ -48,19 +29,11 @@ public class LoadFilesService {
 	@Inject
 	private AccountsService accountsService;
 
-	//	private final ClientsService clientsService = new ClientsService();
-	//    private final AccountsService accountsService = new AccountsService();
 	private final DatabookService databookService = new DatabookService();
 	private final ValidationsService validationsService = new ValidationsService();
 
 	public LoadResultsDTO procesarArchivo(MultipartFormDataInput archivoMP) {
-		//    	InputStream archivo = saveTMPFile(archivoMP);
 		Log.info(LoadFilesService.class,"Iniciando procesamiento de archivo");
-
-		//        if(archivo == null) {
-		//        	return null;
-		//        }
-
 		LoadResultsDTO resultado = LoadResultsDTO.builder()
 				.clientesCargados(new ArrayList<>())
 				.errores(new ArrayList<>())
@@ -77,25 +50,6 @@ public class LoadFilesService {
 
 			try (BufferedReader reader = new BufferedReader(
 					new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-
-				String line = "";
-
-//				while ((line = reader.readLine()) != null) {
-					//                    if (line.isBlank()) {
-					//                        continue;
-					//                    }
-					//
-					//                    String[] values = line.split(",");
-					//
-					//                    Map<String, String> registro = new HashMap<>();
-					//                    registro.put("tipo", values[0].trim());
-					//                    registro.put("numero", values[1].trim());
-					//                    registro.put("fecha", values[2].trim());
-					//                    registro.put("monto", values[3].trim());
-					//                    registro.put("email", values[4].trim());
-					//                    registro.put("telefono", values[5].trim());
-					//
-					//                    registros.add(registro);
 
 					String linea = "";
 					int numeroLinea = 0;

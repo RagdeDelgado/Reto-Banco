@@ -6,10 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 
-import jakarta.ejb.Stateless;
-
-
-//@Stateless
 public class ValidationsService {
 
 	private static final Pattern EMAIL_PATTERN = 
